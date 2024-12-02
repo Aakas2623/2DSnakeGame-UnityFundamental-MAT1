@@ -9,13 +9,30 @@ public class SnakeController : MonoBehaviour
     [SerializeField] private ScoreController scoreController;
     [SerializeField] private GameOverController gameOverController;
 
+    [SerializeField] SnakeID snakeID;
+
     private Vector2 direction = Vector2.right;
 
     private List<Transform> snakeTail;
     public Transform snakeTailPrefab;
 
     public BoxCollider2D SpawnArea;
-    
+
+    private float moveTimer;
+    private float moveTimerMax;
+
+    [SerializeField] private bool isShieldActive;
+
+    [SerializeField] private bool isScoreMultiplierActive;
+
+    [SerializeField] private bool isSpeedBoostActive;
+
+    [SerializeField] private float powerupCooldownTimer;
+
+    [SerializeField] private float SpeedMultiplier;
+
+    [SerializeField] private int ScoreMultiplier;
+
 
     private void Start()
     {
@@ -25,10 +42,22 @@ public class SnakeController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W) && direction != Vector2.down) { direction = Vector2.up; }
-        else if (Input.GetKeyDown(KeyCode.S) && direction != Vector2.up) { direction = Vector2.down; }
-        else if (Input.GetKeyDown(KeyCode.A) && direction != Vector2.right) { direction = Vector2.left; }
-        else if (Input.GetKeyDown(KeyCode.D) && direction != Vector2.left) { direction = Vector2.right; }
+        if (snakeID == SnakeID.AODA)
+        {
+            if (Input.GetKeyDown(KeyCode.W) && direction != Vector2.down) { direction = Vector2.up; }
+            if (Input.GetKeyDown(KeyCode.S) && direction != Vector2.up) { direction = Vector2.down; }
+            if (Input.GetKeyDown(KeyCode.A) && direction != Vector2.right) { direction = Vector2.left; }
+            if (Input.GetKeyDown(KeyCode.D) && direction != Vector2.left) { direction = Vector2.right; }
+        }
+        if (snakeID == SnakeID.MANDA)
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow) && direction != Vector2.down) { direction = Vector2.up; }
+            if (Input.GetKeyDown(KeyCode.DownArrow) && direction != Vector2.up) { direction = Vector2.down; }
+            if (Input.GetKeyDown(KeyCode.LeftArrow) && direction != Vector2.right) { direction = Vector2.left; }
+            if (Input.GetKeyDown(KeyCode.RightArrow) && direction != Vector2.left) { direction = Vector2.right; }
+        }
+
+
     }
 
     private void FixedUpdate()
@@ -122,9 +151,13 @@ public class SnakeController : MonoBehaviour
         {
             Grow();
         }
-        if (collision.tag == "MassBurner")
+        //else if (collision.tag == "MassBurner")
+        //{
+        //    Shrink(-1);
+        //}
+        else if (collision.tag == "Powerup")
         {
-            Shrink(-1);
+            HandleCollisionWithPowerup(collision);
         }
         else if (collision.tag == "Tail")
         {
@@ -137,6 +170,74 @@ public class SnakeController : MonoBehaviour
         Debug.Log("Food Ate");
         scoreController.IncreaseScore(10);
         //scoreController.DecreaseScore(-5);
+    }
+
+    private void HandleCollisionWithPowerup(Collider2D colliderPowerupObject)
+    {
+        if (colliderPowerupObject.gameObject.GetComponent<PowerupController>() != null)
+        {
+            switch (colliderPowerupObject.gameObject.GetComponent<PowerupController>().getPowerupType())
+            {
+                case PowerupType.ScoreMultiplierPowerup:
+                    StartCoroutine(ActivateScoreMultiplier());
+                    break;
+                case PowerupType.ShieldPowerup:
+                    StartCoroutine(ActivateShield());
+                    break;
+                case PowerupType.SpeedBoostPowerup:
+                    StartCoroutine(ActivateSpeedBoost());
+                    break;
+            }
+        }
+
+    }
+
+    private IEnumerator ActivateShield()
+    {
+        isShieldActive = true;
+        Debug.Log("ShieldActive");
+        yield return new WaitForSeconds(powerupCooldownTimer);
+        isShieldActive = false;
+        Debug.Log("ShieldDeactive");
+    }
+
+    private IEnumerator ActivateScoreMultiplier()
+    {
+        isScoreMultiplierActive = true;
+        
+        Debug.Log("Score Multiplier Activated");
+        yield return new WaitForSeconds(powerupCooldownTimer);
+        
+        isScoreMultiplierActive = false;
+        Debug.Log("Score Multiplier Dectivated");
+    }
+
+    private IEnumerator ActivateSpeedBoost()
+    {
+        isSpeedBoostActive = true;
+        moveTimerMax /= SpeedMultiplier;
+        
+        Debug.Log("Speed Boost Activated");
+        yield return new WaitForSeconds(powerupCooldownTimer);
+        
+        isSpeedBoostActive = false;
+        moveTimerMax *= SpeedMultiplier;
+        Debug.Log("Speed Boost Dectivated");
+    }
+
+    public bool checkShieldStatus()
+    {
+        return isShieldActive;
+    }
+
+    public bool checkScoreMultiplierStatus()
+    {
+        return isScoreMultiplierActive;
+    }
+
+    public bool checkSpeedBoostStatus()
+    {
+        return isSpeedBoostActive;
     }
 }
 
