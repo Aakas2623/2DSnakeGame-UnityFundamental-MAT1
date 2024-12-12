@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    //snakedead() - singleton
+    //enum for multiplayer
+    //               
     public PlayerItem[] playerList;
 
     public PlayerItem GetPlayerItem(SnakeID snakeID)
@@ -20,7 +23,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        
+
     }
 
     public int GetPlayerCount()
@@ -48,8 +51,9 @@ public class PlayerItem
 }
 
 public enum SnakeID
-{
-    AODA,
-    MANDA
-}
+    {
+        AODA,
+        MANDA
+    }
+
 

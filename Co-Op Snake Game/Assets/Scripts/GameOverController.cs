@@ -10,6 +10,9 @@ public class GameOverController : MonoBehaviour
     [SerializeField] private Button buttonRestart;
     [SerializeField] private Button buttonLobby;
 
+    public GameManager gameManagerObject;
+    //public TextMeshProUGUI[] ScoreTextList;
+
     private void Awake()
     {
         buttonRestart.onClick.AddListener(ReloadLevel);
@@ -32,5 +35,7 @@ public class GameOverController : MonoBehaviour
         SceneManager.LoadScene(0);
         this.gameObject.SetActive(false);
     }
+
+    
 }
 

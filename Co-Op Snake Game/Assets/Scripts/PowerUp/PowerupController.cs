@@ -10,4 +10,12 @@ public class PowerupController : MonoBehaviour
     {
         return powerupType;
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Player")
+        {
+           gameObject.SetActive(false);
+        }
+    }
 }

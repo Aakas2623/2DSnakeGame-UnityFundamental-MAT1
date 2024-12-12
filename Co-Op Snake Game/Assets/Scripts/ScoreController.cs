@@ -5,35 +5,89 @@ using TMPro;
 
 public class ScoreController : MonoBehaviour
 {
-    TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI scoreTextAoda;
+    [SerializeField] private TextMeshProUGUI scoreTextManda;
+    [SerializeField] private TextMeshProUGUI scoreTextWin;
 
-    int score = 0;
+    int scoreAoda = 0;
+    int scoreManda = 0;
 
     private void Awake()
     {
-        scoreText = GetComponent<TextMeshProUGUI>();
+        //scoreText = GetComponent<TextMeshProUGUI>();
     }
 
     private void Start()
     {
+        //RefreshUI();
+    }
+
+    private void Update()
+    {
         RefreshUI();
     }
 
-    public void IncreaseScore(int increment)
+    //compare()
+    public int GetScore(SnakeID snakeID)
     {
-        score += increment;
+        if (snakeID == SnakeID.AODA)
+        {
+            return scoreAoda; 
+        }
+        else
+        {
+            return scoreManda; 
+        }
+    }
+
+    public void IncreaseScore(SnakeID snakeID, int increment)
+    {
+        //if stat here
+        if (snakeID == SnakeID.AODA) 
+        {
+            scoreAoda += increment;
+        }
+        else 
+        {
+            scoreManda += increment;
+        }
+        
         RefreshUI();
     }
 
-    public void DecreaseScore(int decrement)
+    public void DecreaseScore(SnakeID snakeID, int decrement)
     {
-        score -= decrement;
+        if (snakeID == SnakeID.AODA)
+        {
+            scoreAoda -= decrement;
+        }
+        else
+        {
+            scoreManda -= decrement;
+        }
         RefreshUI();
     }
 
     private void RefreshUI()
     {
-        scoreText.text = "Score : " + score;
+        scoreTextAoda.text = "Aoda : " + scoreAoda;
+        scoreTextManda.text = "Manda : " + scoreManda;
+    }
+
+    public void Win()
+    {
+        if (scoreAoda > scoreManda)
+        {
+            scoreTextWin.text = "Aoda Wins : ";
+        }
+        else if (scoreAoda < scoreManda)
+        {
+            scoreTextWin.text = "Manda Wins : ";
+        }
+        else
+        {
+            scoreTextWin.text = "Draw";
+        }
     }
 }
 

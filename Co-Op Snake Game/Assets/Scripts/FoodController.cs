@@ -30,8 +30,6 @@ public class FoodController : MonoBehaviour
         if(collision.tag == "Player")
         {
             RandomizePosition();
-
-            snakeController.PickUpFood();
         }
     }
 }
