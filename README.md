@@ -1,4 +1,4 @@
-# 2DSnakeGame-UnityFundamental-MAT1
+# Co-op Snake 2d Game
 
 
 
